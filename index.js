@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 // var MongoClient = require('mongodb').MongoClient;
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const app = express();
 require('dotenv').config();
 const port =process.env.PORT || 5000;
@@ -15,20 +15,6 @@ app.get('/laptop', (req, res) =>{
     res.send(laptops);
 })
 
-app.get('/laptop/:id', (req, res) =>{
-    console.log(req.params);
-    const id = parseInt(req.params.id);
-    const laptop = laptops.find(lap => lap.id === id);
-    res.send(laptop);
-})
-//Req to  data from UI
-app.post('/laptop', (req, res) =>{
-    console.log('request', req.body);
-    const laptop = req.body;
-    laptop.id = laptops.length + 1;
-    laptops.push(laptop);
-    res.send(laptop);
-})
 
 
 
@@ -40,20 +26,41 @@ app.post('/laptop', (req, res) =>{
 
 
 var uri = `mongodb://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0-shard-00-00.vhhpf.mongodb.net:27017,cluster0-shard-00-01.vhhpf.mongodb.net:27017,cluster0-shard-00-02.vhhpf.mongodb.net:27017/myFirstDatabase?ssl=true&replicaSet=atlas-rxrbhl-shard-0&authSource=admin&retryWrites=true&w=majority`;
-console.log(uri);
+// console.log(uri);
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
 async function run(){
 try{
   await client.connect();
   const productCollection = client.db('newass11db').collection('laptops');
+
+  //--------------- data receive from Ui ----------------
+  app.post('/user',  async(req, res) =>{
+      const newUser = req.body;
+      console.log('adding new user', newUser);
+      const result = await productCollection.insertOne(newUser);
+      res.send(result)
+  });
+
+
+
+  //-------------data get from mongodb via server
   app.get('/laptops', async(req, res) =>{
     const query ={};
     const cursor = productCollection.find(query);
     const laptops =await cursor.toArray();
     res.send(laptops);
   })
-}finally{}
+  
+//   app.get('/laptops/:id', async(req, res) =>{
+//       const id = req.params.id;
+//       const query= {_id: ObjectId(id)};
+//       const laptop = await laptopCollection.findOne(query);
+//       res.send(laptop);
+
+//   })
+}
+finally{}
 }
 run().catch(console.dir);
 

@@ -1,11 +1,10 @@
 const express = require('express');
 const cors = require('cors');
-// var MongoClient = require('mongodb').MongoClient;
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const res = require('express/lib/response');
 const app = express();
 require('dotenv').config();
-const port =process.env.PORT || 5000;
+const port = process.env.PORT  || 5000;
 
 // middle ware
 app.use(cors ());
@@ -99,5 +98,5 @@ app.get('/', (req, res) =>{
     res.send('ass11 server is running and mongo is connected to heroku');
 })
 app.listen(port, () =>{
-    console.log('ass11 running on port', port);
+    console.log('ass11 running  on port', port);
 })

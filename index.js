@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 // var MongoClient = require('mongodb').MongoClient;
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
+const res = require('express/lib/response');
 const app = express();
 require('dotenv').config();
 const port =process.env.PORT || 5000;
@@ -17,7 +18,6 @@ app.get('/laptop', (req, res) =>{
 
 
 
-
 //--------------------------------------------------------------------
 // user=john67
 //pass =WcsjTy6PHL4Dgj2g
@@ -30,11 +30,12 @@ var uri = `mongodb://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0-shar
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
 async function run(){
+    
 try{
   await client.connect();
   const productCollection = client.db('newass11db').collection('laptops');
 
-  //--------------- data receive from Ui ----------------
+  //----- data receive from Ui to server----------------
   app.post('/user',  async(req, res) =>{
       const newUser = req.body;
       console.log('adding new user', newUser);
@@ -51,21 +52,51 @@ try{
     const laptops =await cursor.toArray();
     res.send(laptops);
   })
-  
-//   app.get('/laptops/:id', async(req, res) =>{
-//       const id = req.params.id;
-//       const query= {_id: ObjectId(id)};
-//       const laptop = await laptopCollection.findOne(query);
-//       res.send(laptop);
+  // data insert from UI
+  app.get('/laptops/:id', async(req, res) =>{
+      const id = req.params.id;
+      const query= {_id: ObjectId(id)};
+      const laptop = await productCollection.findOne(query);
+      res.send(laptop);
 
-//   })
+  })
+// data update
+app.put('/laptops/:id', async(req, res) =>{
+    const id = req.params.id;
+    const updatedUser = req.body;
+    const filter = {_id: ObjectId(id)};
+    const options = {upsert: true};
+    const updatedDoc = {
+        $set:{
+            name: updatedUser.name,
+            price: updatedUser.email
+        }
+    };
+    const result =await productCollection.updateOne(filter, updatedDoc,options);
+    res.send(result)
+})
+
+
+
+// delete data 
+
+app.delete('/laptops/:id', async(req, res) =>{
+    const id=req.params.id;
+    const query = {_id: ObjectId(id)};
+    const result = await productCollection.deleteOne(query);
+    res.send(result);
+})
+
+
+
+
 }
 finally{}
 }
 run().catch(console.dir);
 
 app.get('/', (req, res) =>{
-    res.send('ass11 server is running');
+    res.send('ass11 server is running and mongo is connected to heroku');
 })
 app.listen(port, () =>{
     console.log('ass11 running on port', port);

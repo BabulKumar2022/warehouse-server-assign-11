@@ -95,7 +95,7 @@ finally{}
 run().catch(console.dir);
 
 app.get('/', (req, res) =>{
-    res.send('ass11 server is running and mongo is connected to heroku');
+    res.send('ass11 server is running but  heroku is not work');
 })
 app.listen(port, () =>{
     console.log('ass11 running  on port', port);

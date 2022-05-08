@@ -4,7 +4,7 @@ const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const res = require('express/lib/response');
 const app = express();
 require('dotenv').config();
-const port = process.env.PORT || 8000;
+const port = process.env.PORT || 7000;
 
 // middle ware
 app.use(cors ());
@@ -95,7 +95,7 @@ finally{}
 run().catch(console.dir);
 
 app.get('/', (req, res) =>{
-    res.send('ass11 server is running and heroku is working but .....');
+    res.send('ass11 server is running and heroku is  some time working ');
 })
 app.listen(port, () =>{
     console.log('ass11 running  on port', port);

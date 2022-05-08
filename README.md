@@ -14,4 +14,4 @@
 ## Deployment
 
 * Firebase (Client side)
-*  Heroku (server side)
+*  Heroku (server side)  https://pacific-wildwood-26590.herokuapp.com/

@@ -95,7 +95,7 @@ finally{}
 run().catch(console.dir);
 
 app.get('/', (req, res) =>{
-    res.send('ass11 server is running but not work');
+    res.send('ass11 server is running and heroku is working');
 })
 app.listen(port, () =>{
     console.log('ass11 running  on port', port);
